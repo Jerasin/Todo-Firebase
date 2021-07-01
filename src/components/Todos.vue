@@ -20,7 +20,14 @@
                 {{ todo }}
               </td>
               <td>
-                  <button class="btn btn-danger" @click="deleteTodo(id)">Delete</button>
+               <router-link :to="`/edit/${id}`">
+                  <button class="btn btn-success" >
+                  Update
+                </button>
+               </router-link>
+                <button class="btn btn-danger" @click="deleteTodo(id)">
+                  Delete
+                </button>
               </td>
             </tr>
           </tbody>
@@ -44,10 +51,18 @@ export default {
 <style scoped>
 .content {
   margin: 10px auto;
-  padding: 100px;
 }
 
 .header {
   text-align: center;
+}
+
+th,
+td {
+  text-align: center;
+}
+
+.btn-danger {
+  margin-left: 10px;
 }
 </style>

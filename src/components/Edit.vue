@@ -1,7 +1,7 @@
 <template>
   <div id="form">
     <div class="container">
-      <h1 class="header">App Todos</h1>
+      <h1 class="header">Edit Todos {{ todoId }}</h1>
 
       <div class="content">
         <form @submit.prevent="onSubmit">
@@ -28,28 +28,41 @@
               v-model="form.todo"
             ></textarea>
           </div>
-          <button type="submit" class="btn btn-primary">Create Todo</button>
+          <button type="submit" class="btn btn-primary">Edit</button>
+          <router-link :to="`/`"
+            ><button type="submit" class="btn btn-warning">
+              Cancel
+            </button></router-link
+          >
         </form>
       </div>
-      <Todos />
     </div>
   </div>
 </template>
 
 <script>
-import { createTodo } from "../firebase";
-import { reactive } from "vue";
-import Todos from "@/components/Todos.vue";
+import { updateTodo , getTodoById } from "../firebase";
+import { useRouter, useRoute } from "vue-router";
+import { reactive, computed, onMounted } from "vue";
 export default {
-  name: "Form",
-  components: {
-    Todos,
-  },
+  name: "Edit",
   setup() {
     const form = reactive({ owner: "", todo: "" });
+    const router = useRouter();
+    const route = useRoute();
+    const todoId = computed(() => route.params.id);
+
+    onMounted(async () => {
+      const todo = await getTodoById(todoId.value);
+      console.log(todo, todoId.value);
+      form.owner = todo.owner;
+      form.todo = todo.todo;
+    });
 
     const onSubmit = async () => {
-      await createTodo({ ...form });
+      console.log(todoId.value);
+      await updateTodo(todoId.value, { ...form });
+      router.push("/");
       form.owner = "";
       form.todo = "";
     };
